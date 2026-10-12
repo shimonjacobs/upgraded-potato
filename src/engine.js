@@ -5,6 +5,10 @@ function mealTypesForHour (hour){
     return ["snack"]; // 11pm-5am late night snack
 }
 
+function labelForHour (hour){
+    if (hour >= 5 && hour < 11) return ["breakfast time"];
+    if (hour >= 11 && hour < 16) return ["lunch time"];
+    if (hour >= 16 && hour < 21) return ["supper time"];
+}
 
-
-if (typeof module !== 'undefined') module.exports = { mealTypesForHour, };
+if (typeof module !== 'undefined') module.exports = { mealTypesForHour, labelForHour};
