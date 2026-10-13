@@ -17,5 +17,11 @@ function labelForHour(hour) {
   return "the middle of the night";
 }
 
-if (typeof module !== 'undefined') module.exports = { mealTypesForHour, labelForHour};
+function kosherAllows(dishKosher, userKosher){
+    if (dishKosher === "milky" && userKosher === "meaty"){
+        return false;
+    }
+    return true;
+}
+if (typeof module !== 'undefined') module.exports = { mealTypesForHour, labelForHour, kosherAllows};
 
