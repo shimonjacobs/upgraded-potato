@@ -1,6 +1,6 @@
 const test = require("node:test");
 const assert = require("node:assert");
-const {mealTypesForHour, labelForHour, kosherAllows, selectPool } = require("../src/engine.js")
+const {mealTypesForHour, labelForHour, kosherAllows, selectPool, applyPreferences } = require("../src/engine.js")
 
 //make test dish generator
 let nextId = 0;
@@ -92,5 +92,22 @@ test ("meaty dish stays in pool if user is meaty", ()=>{
   assert.deepStrictEqual(selectPool([meatyDish], {kosher: "meaty"}), [meatyDish]);
 })
 
-//apply preferences
-test ()
+const hotDish = makeDish({tags: {temperature: "hot"}});
+const coldDish = makeDish({tags: {temperature: "cold"}});
+const hotDish2 =makeDish({tags: {temperature: "hot"}});
+
+//apply preferences, return preferrred items, relax criteria if nothing matches
+test ("only keep items that match preferences without relaxing anything", ()=>{
+  const result = applyPreferences([hotDish, coldDish], {temperature:"cold"});
+  assert.deepStrictEqual(result, {dishes: [coldDish], relaxed: {}})
+})
+
+test ("relaxes the preferences when no item matches", ()=>{
+  const result = applyPreferences([hotDish, hotDish2], {temperature:"cold"});
+  assert.deepStrictEqual(result, {dishes: [hotDish, hotDish2],  relaxed: {temperature: "cold"}})
+})
+
+test ("return all options when no preference specified", ()=>{
+  const result = applyPreferences([hotDish, coldDish], {});
+  assert.deepStrictEqual(result, {dishes: [hotDish, coldDish], relaxed: {}})
+})

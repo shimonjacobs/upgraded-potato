@@ -31,8 +31,18 @@ dish = {id, name, tags}
 options = {hour, kosher}
 */
 function selectPool(dishes, options) {
-  const filtered_list = dishes.filter(dish => kosherAllows(dish.tags.kosher, options.kosher));
-    return filtered_list;
+  const filteredList = dishes.filter(dish => kosherAllows(dish.tags.kosher, options.kosher));
+    return filteredList;
 }
 
-if (typeof module !== 'undefined') module.exports = { mealTypesForHour, labelForHour, kosherAllows, selectPool};
+function applyPreferences(dishes, preferences) {
+    const filteredList = dishes.filter(dish =>
+  Object.entries(preferences).every(([key, value]) => dish.tags[key] === value)
+);
+    if (filteredList.length === 0){
+      return{dishes: dishes, relaxed: preferences};
+    }
+    return {dishes: filteredList, relaxed: {}};
+}
+if (typeof module !== 'undefined') module.exports = { mealTypesForHour, labelForHour, kosherAllows, selectPool, applyPreferences};
+
