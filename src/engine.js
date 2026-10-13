@@ -23,5 +23,16 @@ function kosherAllows(dishKosher, userKosher){
     }
     return true;
 }
-if (typeof module !== 'undefined') module.exports = { mealTypesForHour, labelForHour, kosherAllows};
 
+
+/* selectPool(dishes, options)
+filters a given list of dishes by removing not suitable options
+dish = {id, name, tags}
+options = {hour, kosher}
+*/
+function selectPool(dishes, options) {
+  const filtered_list = dishes.filter(dish => kosherAllows(dish.tags.kosher, options.kosher));
+    return filtered_list;
+}
+
+if (typeof module !== 'undefined') module.exports = { mealTypesForHour, labelForHour, kosherAllows, selectPool};
