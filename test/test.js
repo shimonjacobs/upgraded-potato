@@ -2,6 +2,16 @@ const test = require("node:test");
 const assert = require("node:assert");
 const {mealTypesForHour, labelForHour, kosherAllows, selectPool } = require("../src/engine.js")
 
+//make test dish generator
+let nextId = 0;
+const makeDish = (overrides = {}) => ({
+  id: `dish-${nextId++}`,
+  ...overrides,
+  tags: {kosher: "pareve", temperature: "hot", mealType: ["lunch"],
+    ...overrides.tags
+  }
+})
+
 //Test mealTypesForHour Function
 test("7am is breakfast", ()=> {
   assert.deepStrictEqual(mealTypesForHour(7), ["breakfast"]);
@@ -67,17 +77,20 @@ test ("pareve dish always allowed", ()=>{
 //selectPool
 
 //some sample dishes
-const cereal = {id: "cereal", tags: {kosher: "milky"}};
-const steak = {id: "steak", tags: {kosher: "meaty"}};
+const milkyDish = makeDish({tags: {kosher: "milky"}});
+const meatyDish = makeDish({tags: {kosher: "meaty"}});
 
 test ("selectPool returns empty array for empty list", ()=>{
   assert.deepStrictEqual(selectPool([], {}), []);
 });
 
 test ("reject milky dishes if user is meaty", ()=>{
-  assert.deepStrictEqual(selectPool([cereal], {kosher: "meaty"}), []);
+  assert.deepStrictEqual(selectPool([milkyDish], {kosher: "meaty"}), []);
 });
 
 test ("meaty dish stays in pool if user is meaty", ()=>{
-  assert.deepStrictEqual(selectPool([steak], {kosher: "meaty"}), [steak]);
+  assert.deepStrictEqual(selectPool([meatyDish], {kosher: "meaty"}), [meatyDish]);
 })
+
+//apply preferences
+test ()
